@@ -85,12 +85,12 @@ OFFSET (@pagenum - 1) * @pagesize ROWS FETCH NEXT @pagesize ROWS ONLY;
 */
 
 select distinct ad.DeliveryMethodName, pp.ExpectedDeliveryDate, ps.SupplierName, ap.FullName
-from  Purchasing.PurchaseOrders as pp left join Purchasing.Suppliers as ps on pp.SupplierID = ps.SupplierID 
-									  left join Application.DeliveryMethods as ad on pp.DeliveryMethodID = pp.DeliveryMethodID
-									  left join Application.People as ap on pp.ContactPersonID = ap.PersonID
-where convert(varchar, pp.ExpectedDeliveryDate, 112) between '20130101' and '20130131'
+from  Purchasing.PurchaseOrders as pp inner join Purchasing.Suppliers as ps on pp.SupplierID = ps.SupplierID 
+									  inner join Application.DeliveryMethods as ad on pp.DeliveryMethodID = pp.DeliveryMethodID
+									  inner join Application.People as ap on pp.ContactPersonID = ap.PersonID
+where ExpectedDeliveryDate between '2013-01-01' and '2013-01-31'
 and (ad.DeliveryMethodName = 'Air Freight' or ad.DeliveryMethodName = 'Refrigerated Air Freight')
-and pp.IsOrderFinalized = '1'
+and pp.IsOrderFinalized = 1
 
 /*
 5. Десять последних продаж (по дате продажи) с именем клиента и именем сотрудника,
@@ -117,4 +117,4 @@ left join sales.OrderLines as sol on so.OrderID = sol.OrderID
 left join Sales.Customers as sc on so.CustomerID = sc.CustomerID
 left join Warehouse.StockItems ws on ws.StockItemID = sol.StockItemID
 
-and ws.StockItemName = 'Chocolate frogs 250g%'
+and ws.StockItemName = 'Chocolate frogs 250g'
