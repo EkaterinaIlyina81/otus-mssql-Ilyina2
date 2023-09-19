@@ -72,13 +72,15 @@ order by year(si.InvoiceDate), MONTH (si.InvoiceDate)
 */
 
 
-select year(si.InvoiceDate) as InvoiceYEAR, MONTH (si.InvoiceDate) as InvoiceMONTH, sil.Description as [Наименование товара], SUM(sil.ExtendedPrice) as SUM, 
+
+select year(si.InvoiceDate) as InvoiceYEAR, MONTH (si.InvoiceDate) as InvoiceMONTH, s.StockItemName as [Наименование товара], SUM(sil.ExtendedPrice) as SUM, 
 		MIN(si.InvoiceDate) as [Дата первой продажи], COUNT(sil.Quantity) as [Количество]
 from Sales.Invoices as si
 Join Sales.InvoiceLines as sil on si.InvoiceID = sil.InvoiceID
-group by year(si.InvoiceDate), MONTH (si.InvoiceDate), sil.Description 
-HAVING count(*) < 50
-order by year(si.InvoiceDate), MONTH (si.InvoiceDate), sil.Description   
+join Warehouse.StockItems as s on s.StockItemID = sil.StockItemID
+group by year(si.InvoiceDate), MONTH (si.InvoiceDate), s.StockItemName, s.QuantityPerOuter   
+HAVING COUNT(sil.Quantity) * s.QuantityPerOuter > 50
+order by year(si.InvoiceDate), MONTH (si.InvoiceDate), s.StockItemName   
 
 -- ---------------------------------------------------------------------------
 -- Опционально
